@@ -377,9 +377,18 @@ func (ghc *GitHubContext) loadCollaboratorData(direct bool) (map[string]string, 
 			Collaborators struct {
 				PageInfo v4PageInfo
 				Edges    []struct {
-					Permission string  `graphql:"permission"`
-					Node       v4Actor `graphql:"node"`
-				}
+					Permission        string  `graphql:"permission"`
+					Node              v4Actor `graphql:"node"`
+					PermissionSources []struct {
+						Organization struct {
+							Login string `graphql:"login"`
+						} `graphql:"organization"`
+						Source struct {
+							TypeName string `graphql:"__typename"`
+						}
+						Permission string `graphql:"permission"`
+					} `graphql:"permissionSources"`
+				} `graphql:"edges"`
 			} `graphql:"collaborators(first: 100, after: $collaboratorCursor, affiliation: $affiliation)"`
 		} `graphql:"repository(owner: $owner, name: $name)"`
 	}
